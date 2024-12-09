@@ -10,7 +10,7 @@ export const postJob = async (req, res) => {
             return res.status(400).json({
                 message: "Somethin is missing.",
                 success: false
-            })
+            })//it end//
         };
         const job = await Job.create({
             title,
