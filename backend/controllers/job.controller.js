@@ -28,7 +28,7 @@ export const postJob = async (req, res) => {
             message: "New job created successfully.",
             job,
             success: true
-        });
+        });//hard
     } catch (error) {
         console.log(error);
     }
