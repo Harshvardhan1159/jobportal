@@ -13,7 +13,7 @@ function App() {
   return (
     <>
  <Navbar></Navbar>
- <SignupForm></SignupForm>
+ <SignInPage></SignInPage>
     </>
   )
 }

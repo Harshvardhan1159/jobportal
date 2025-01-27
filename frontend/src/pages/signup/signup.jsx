@@ -11,6 +11,7 @@ const SignupForm = () => {
      role: "",
      file: ""
   });
+  // const navigate= useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,12 +54,27 @@ const SignupForm = () => {
           'Content-Type': 'multipart/form-data', // Important for file uploads
         },
       });
+      if(response.data.success){
+        // navigate("/login")
+      }
       console.log('Response:', response.data);
       console.log("happy");
       
     } catch (error) {
-      console.error('Error:', error);
+      if (error.response) {
+        console.error("Server Error:", error.response.data); // Logs the server error message
+        alert(error.response.data.message); // Show the error message to the user
+      } else if (error.request) {
+        console.error("No Response Received:", error.request);
+        alert("No response received from server.");
+      } else {
+        console.error("Error Config:", error.message);
+        alert("An error occurred.");
+      }
     }
+    
+    
+    
   };
 
   return (
