@@ -1,134 +1,114 @@
-import React, { useState, useEffect, useRef } from 'react';
+
+import { Popover, PopoverContent, PopoverTrigger }from '@radix-ui/react-popover'
+
+
+import { Avatar, AvatarImage } from '../../components/ui/avatar'
+import { LogOut, User2 } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+
+
+import { Button } from '../../components/ui/button'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { USER_API_END_POINT } from '../../utils/constant';
+import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading, setUser } from '@/redux/authSlice'
+
 
 const Navbar = () => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-  const dropdownRef = useRef(null);
+    const { user } = useSelector(store => store.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsProfileOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  return (
-    <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <a href="/" className="text-4xl font-semibold text-[#FF5A5F]">
-            JobPortal
-          </a>
-
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-12">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-lg font-medium"
-            >
-              Home
-            </a>
-            <a
-              href="/jobs"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-lg font-medium"
-            >
-              Jobs
-            </a>
-            <a
-              href="/browse"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-lg font-medium"
-            >
-              Browse
-            </a>
-          </div>
-
-          {/* Profile or Auth Options */}
-          <div className="relative" ref={dropdownRef}>
-            {isLoggedIn ? (
-              // If logged in, show profile dropdown
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center space-x-3 focus:outline-none"
-              >
-                <img
-                  src="https://i.pinimg.com/236x/c7/af/a5/c7afa5b705fcf05794ca28af309503fb.jpg"
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-                <svg
-                  className="h-4 w-4 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            ) : (
-              // If not logged in, show Sign In and Sign Up buttons
-              <div className="flex items-center space-x-4">
-                <a
-                  href="/signin"
-                  className="text-gray-700 hover:text-gray-900 px-4 py-2 text-lg font-medium border border-gray-300 rounded-md"
-                >
-                  Sign In
-                </a>
-                <a
-                  href="/signup"
-                  className="text-white bg-[#FF5A5F] hover:bg-[#FF7A7F] px-4 py-2 text-lg font-medium rounded-md"
-                >
-                  Sign Up
-                </a>
-              </div>
-            )}
-
-            {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                <div className="px-4 py-3">
-                  <div className="flex items-center space-x-3">
-                    <img
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JhB7BrQyZjNAcIpR4NiQoLBT0LKrcF.png"
-                      alt="Profile"
-                      className="w-12 h-12 rounded-full"
-                    />
-                    <div>
-                      <p className="text-lg font-medium text-gray-900">Patel MernStack</p>
-                      <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet</p>
-                    </div>
-                  </div>
-                  <a
-                    href="/profile"
-                    className="block px-4 py-2 mt-2 text-sm text-blue-600 hover:bg-gray-100 rounded-md"
-                  >
-                    View Profile
-                  </a>
-                  <button
-                    onClick={() => {
-                      setIsLoggedIn(false); // Simulate logout
-                      console.log('Logging out...');
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                  >
-                    Logout
-                  </button>
+    const logoutHandler = async () => {
+        try {
+            const res = await axios.get(`${USER_API_END_POINT}/logout`, { withCredentials: true });
+            if (res.data.success) {
+                dispatch(setUser(null));
+                navigate("/");
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+        }
+    }
+    return (
+        <div className='bg-white'>
+            <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
+                <div>
+                    <h1 className='text-2xl font-bold'>Job<span className='text-[#F83002]'>Portal</span></h1>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
+                <div className='flex items-center gap-12'>
+                    <ul className='flex font-medium items-center gap-5'>
+                        {
+                            user && user.role === 'recruiter' ? (
+                                <>
+                                    <li><Link to="/admin/companies">Companies</Link></li>
+                                    <li><Link to="/admin/jobs">Jobs</Link></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><Link to="/">Home</Link></li>
+                                    <li><Link to="/jobs">Jobs</Link></li>
+                                    <li><Link to="/browse">Browse</Link></li>
+                                </>
+                            )
+                        }
 
-export default Navbar;
+
+                    </ul>
+                    {
+                        !user ? (
+                            <div className='flex items-center gap-2'>
+                                <Link to="/login"><Button variant="outline">Login</Button></Link>
+                                <Link to="/signup"><Button className="bg-[#6A38C2] hover:bg-[#5b30a6]">Signup</Button></Link>
+                            </div>
+                        ) : (
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Avatar className="cursor-pointer">
+                                        <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
+                                    </Avatar>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80">
+                                    <div className=''>
+                                        <div className='flex gap-2 space-y-2'>
+                                            <Avatar className="cursor-pointer">
+                                                <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
+                                            </Avatar>
+                                            <div>
+                                                <h4 className='font-medium'>{user?.fullname}</h4>
+                                                <p className='text-sm text-muted-foreground'>{user?.profile?.bio}</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex flex-col my-2 text-gray-600'>
+                                            {
+                                                user && user.role === 'student' && (
+                                                    <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                                                        <User2 />
+                                                        <Button variant="link"> <Link to="/profile">View Profile</Link></Button>
+                                                    </div>
+                                                )
+                                            }
+
+                                            <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                                                <LogOut />
+                                                <Button onClick={logoutHandler} variant="link">Logout</Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        )
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+export default Navbar
