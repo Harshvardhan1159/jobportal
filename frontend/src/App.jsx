@@ -10,6 +10,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './pages/Login/Login'
 import Signup from './pages/Signup/Signup'
 import Home from './components/Homepage/Home'
+import Jobs from './components/jobs/Jobs'
 
 const appRouter = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const appRouter = createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />
+  },
+  {
+    path: '/jobs',
+    element: <Jobs />
   },
 ])
 
