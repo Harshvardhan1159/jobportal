@@ -14,6 +14,8 @@ const Jobs = () => {
 
             {
                 jobsArray.map((item,index) => <Job/>)
+
+                //add similar job
             }
 
 
