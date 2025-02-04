@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Profiler, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -12,6 +12,8 @@ import Signup from './pages/Signup/Signup'
 import Home from './components/Homepage/Home'
 import Jobs from './components/jobs/Jobs'
 import Browse from './components/Browse'
+
+import Profile from './components/profile'
 
 const appRouter = createBrowserRouter([
   {
@@ -33,6 +35,10 @@ const appRouter = createBrowserRouter([
   {
     path: '/browse',
     element: <Browse />
+  },
+  {
+    path: '/profile',
+    element:<Profile/>
   },
 ])
 
