@@ -1,20 +1,14 @@
-
-import { Popover, PopoverContent, PopoverTrigger }from '@radix-ui/react-popover'
-
-
-import { Avatar, AvatarImage } from '../../components/ui/avatar'
+import React from 'react'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { Button } from '../ui/button'
+import { Avatar, AvatarImage } from '../ui/avatar'
 import { LogOut, User2 } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-
-
-import { Button } from '../../components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { USER_API_END_POINT } from '../../utils/constant';
-import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading, setUser } from '@/redux/authSlice'
-
+import axios from 'axios'
+import { USER_API_END_POINT } from '@/utils/constant'
+import { setUser } from '@/redux/authSlice'
+import { toast } from 'sonner'
 
 const Navbar = () => {
     const { user } = useSelector(store => store.auth);
@@ -76,7 +70,7 @@ const Navbar = () => {
                                     <div className=''>
                                         <div className='flex gap-2 space-y-2'>
                                             <Avatar className="cursor-pointer">
-                                                <AvatarImage src={user?.profile?.profilePhoto} alt="https://www.pngitem.com/pimgs/m/78-786293_1240-x-1240-0-avatar-profile-icon-png.png" />
+                                                <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
                                             </Avatar>
                                             <div>
                                                 <h4 className='font-medium'>{user?.fullname}</h4>

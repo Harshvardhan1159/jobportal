@@ -10,7 +10,7 @@ export const postJob = async (req, res) => {
             return res.status(400).json({
                 message: "Somethin is missing.",
                 success: false
-            })//it end//
+            })
         };
         const job = await Job.create({
             title,
@@ -28,7 +28,7 @@ export const postJob = async (req, res) => {
             message: "New job created successfully.",
             job,
             success: true
-        });//hard
+        });
     } catch (error) {
         console.log(error);
     }
@@ -97,6 +97,6 @@ export const getAdminJobs = async (req, res) => {
             success: true
         })
     } catch (error) {
-        console.log(error);//logic change
+        console.log(error);
     }
 }
