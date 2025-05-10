@@ -2,10 +2,11 @@ import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
-import cloudinary from "../utils/cloudinary.js";
+import {uploadOnCloudinary} from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     try {
+        // data setup 
         const { fullname, email, phoneNumber, password, role } = req.body;
          
         if (!fullname || !email || !phoneNumber || !password || !role) {
@@ -15,9 +16,8 @@ export const register = async (req, res) => {
             });
         };
         const file = req.file;
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
+        console.log(file);
+        const cloudResponse = await uploadOnCloudinary(file.path);
         const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
@@ -27,6 +27,7 @@ export const register = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // create user
         await User.create({
             fullname,
             email,
@@ -92,7 +93,10 @@ export const login = async (req, res) => {
             profile: user.profile
         }
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
+        // secure : true for production ( https ) but in local ( http )
+        return res.status(200)
+        .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' , secure:process.env.NODE_ENV === "production" })
+        .json({
             message: `Welcome back ${user.fullname}`,
             user,
             success: true
@@ -103,22 +107,33 @@ export const login = async (req, res) => {
 }
 export const logout = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'strict'
+        });
+
+        return res.status(200).json({
             message: "Logged out successfully.",
             success: true
-        })
+        });
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
     }
-}
+};
+
 export const updateProfile = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, bio, skills } = req.body;
         
         const file = req.file;
-        // cloudinary ayega idhar
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        console.log(file);
+        const cloudResponse = await uploadOnCloudinary(file.path);
 
 
 
@@ -126,7 +141,9 @@ export const updateProfile = async (req, res) => {
         if(skills){
             skillsArray = skills.split(",");
         }
-        const userId = req.id; // middleware authentication
+
+        const userId = req.id; 
+
         let user = await User.findById(userId);
 
         if (!user) {
@@ -135,6 +152,7 @@ export const updateProfile = async (req, res) => {
                 success: false
             })
         }
+        
         // updating data
         if(fullname) user.fullname = fullname
         if(email) user.email = email
