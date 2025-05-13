@@ -95,7 +95,7 @@ export const login = async (req, res) => {
 
         // secure : true for production ( https ) but in local ( http )
         return res.status(200)
-        .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' , secure:process.env.NODE_ENV === "production" })
+        .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true,  sameSite: 'None' , secure:process.env.NODE_ENV === "production" })
         .json({
             message: `Welcome back ${user.fullname}`,
             user,
@@ -111,7 +111,7 @@ export const logout = async (req, res) => {
         res.clearCookie("token", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: 'strict'
+            sameSite: 'None'
         });
 
         return res.status(200).json({
@@ -132,7 +132,6 @@ export const updateProfile = async (req, res) => {
         const { fullname, email, phoneNumber, bio, skills } = req.body;
         
         const file = req.file;
-        console.log(file);
         const cloudResponse = await uploadOnCloudinary(file.path);
 
 
