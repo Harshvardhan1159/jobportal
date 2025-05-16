@@ -19,7 +19,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: "https://jobquest2.netlify.app",
+    origin: "https://jobquest-v1.netlify.app/",
     credentials: true
 }
 
