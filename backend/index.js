@@ -19,15 +19,9 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 const corsOptions = {
-    origin:'https://skill-op.netlify.app',
-    credentials:true
+    origin: "https://jobquest2.netlify.app",
+    credentials: true
 }
-
-
-// const corsOptions = {
-//     origin:'http://localhost:5173',
-//     credentials:true
-// }
 
 app.use(cors(corsOptions));
 app.use(express.static("./public"));
