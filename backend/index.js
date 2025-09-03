@@ -18,13 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// // middleware
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
 const corsOptions = {
-  origin: "https://jobquest-v1.netlify.app",
+  origin: "https://jobportal-me.netlify.app",
   credentials: true,
 };
 
